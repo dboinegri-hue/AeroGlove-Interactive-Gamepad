@@ -1,0 +1,52 @@
+[package]
+name = "aeroglove"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# HAL for STM32U545
+embassy-stm32 = { version = "0.4.0", features = ["defmt", "stm32u545re", "unstable-pac", "memory-x", "time-driver-tim4", "exti", "chrono"] }
+
+# Embedded HAL utilities
+embassy-embedded-hal = { version = "0.5.0", features = ["defmt"] }
+
+# Synchronization primitives (channels, watches, signals)
+embassy-sync = { version = "0.7.2", features = ["defmt"] }
+
+# Async/await executor
+embassy-executor = { version = "0.9.0", features = ["arch-cortex-m", "executor-thread", "defmt"] }
+
+# Utilities for working with futures (select, join, ...)
+embassy-futures = "0.1.2"
+
+# Timekeeping, delays, timeouts
+embassy-time = { version = "0.5.0", features = ["defmt", "defmt-timestamp-uptime", "tick-hz-32_768"] }
+
+# Defmt support
+defmt = "1.0.1"
+defmt-rtt = "1.1.0"
+
+# Heapless utilities (we use heapless::String to format serial lines)
+heapless = "0.8"
+
+# Low level access to Cortex-M processors
+cortex-m = { version = "0.7.7", features = ["inline-asm", "critical-section-single-core"] }
+
+# Bootstrap crate for Cortex-M Processors
+cortex-m-rt = "0.7.5"
+
+# Panic handler
+panic-probe = { version = "1.0.0", features = ["print-defmt"] }
+
+# Trig + sqrt for the complementary filter (no_std-friendly)
+libm = "0.2"
+
+[profile.release]
+debug = 2          # keep symbols so defmt prints make sense
+lto = "fat"
+opt-level = "s"
+codegen-units = 1
+
+[profile.dev]
+debug = 2
+opt-level = 1      # opt-level=0 is unusably slow for float math
